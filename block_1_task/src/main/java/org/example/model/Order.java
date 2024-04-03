@@ -7,15 +7,19 @@ import java.util.List;
 public class Order {
     private int orderId;
     private Date orderDate;
+    private String client;
     private double amount;
     private List<String> items;
+
     public Order() {
     }
-    public Order(int orderId, Date orderDate, double amount) {
+
+    public Order(int orderId, Date orderDate, double amount, String client) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.amount = amount;
         this.items = new ArrayList<>();
+        this.client = client;
     }
 
     // Getters and setters
@@ -42,6 +46,13 @@ public class Order {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+    public String getClient() {
+        return client;
+    }
+
+    public void setClient(String client) {
+        this.client = client;
     }
 
     public List<String> getItems() {
