@@ -1,11 +1,9 @@
-package test.parser;
+package test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.model.Order;
 import org.example.parser.JsonParser;
 import org.junit.jupiter.api.Test;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
