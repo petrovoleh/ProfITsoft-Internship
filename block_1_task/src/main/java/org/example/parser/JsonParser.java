@@ -18,11 +18,14 @@ public class JsonParser {
         List<File> files = new ArrayList<>();
         File directory = new File(directoryPath);
         if (directory.isDirectory()) {
-            Collections.addAll(files, directory.listFiles());
+            for (File file : directory.listFiles()) {
+                if (file.isFile()) {
+                    files.add(file);
+                }
+            }
         }
         return files;
     }
-
 
     private static List<Order> parseFile(ObjectMapper objectMapper, File file) {
         try {
