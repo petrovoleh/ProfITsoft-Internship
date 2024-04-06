@@ -13,6 +13,7 @@ public class JsonParserTest {
     private static final String emptyDirectory = "./test_jsons/empty_directory";
     private static final String invalidJsons = "./test_jsons/invalid_json";
     private static final String jsonDirectory = "./test_jsons";
+    private static final String bigFileDirectory = "./test_jsons/big_file";
     private static final String nonExistentFile = "nonexistent_orders.json";
 
     @Test
@@ -37,6 +38,18 @@ public class JsonParserTest {
     }
     @Test
     void testParseOrders_EmptyDirectory() {
+        List<Order> orders = JsonParser.parseOrders(objectMapper, emptyDirectory);
+        assertNotNull(orders);
+        assertTrue(orders.isEmpty());
+    }
+    @Test
+    void testParseOrders_BigFile() {
+        List<Order> orders = JsonParser.parseOrders(objectMapper, bigFileDirectory);
+        assertNotNull(orders);
+        assertFalse(orders.isEmpty());
+    }
+    @Test
+    void testParseOrders_ManyFiles() {
         List<Order> orders = JsonParser.parseOrders(objectMapper, emptyDirectory);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());

@@ -8,13 +8,12 @@ public class Order {
     private int orderId;
     private Date orderDate;
     private String client;
-    private double amount;
+    private int amount;
     private List<String> items;
 
-    public Order() {
-    }
+    public Order() {}
 
-    public Order(int orderId, Date orderDate, double amount, String client) {
+    public Order(int orderId, Date orderDate, int amount, String client) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.amount = amount;
@@ -40,13 +39,14 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
+
     public String getClient() {
         return client;
     }
