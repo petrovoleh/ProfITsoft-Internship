@@ -4,15 +4,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Цей клас представляє модель замовлення з ідентифікатором, датою замовлення, клієнтом, сумою та списком товарів.
+ */
 public class Order {
-    private int orderId;
-    private Date orderDate;
-    private String client;
-    private int amount;
-    private List<String> items;
+    private int orderId; // Ідентифікатор замовлення
+    private Date orderDate; // Дата замовлення
+    private String client; // Ім'я клієнта
+    private int amount; // Сума замовлення
+    private List<String> items; // Список товарів
 
+    /**
+     * Створює порожній об'єкт замовлення.
+     */
     public Order() {}
 
+    /**
+     * Створює об'єкт замовлення з вказаними параметрами.
+     * @param orderId ідентифікатор замовлення
+     * @param orderDate дата замовлення
+     * @param amount сума замовлення
+     * @param client ім'я клієнта
+     */
     public Order(int orderId, Date orderDate, int amount, String client) {
         this.orderId = orderId;
         this.orderDate = orderDate;
@@ -21,8 +34,7 @@ public class Order {
         this.client = client;
     }
 
-    // Getters and setters
-
+    /* Гетери і сетери */
     public int getOrderId() {
         return orderId;
     }
