@@ -9,15 +9,13 @@ import java.util.Map;
  * Цей клас надає сервіс для обчислення статистики замовлень.
  */
 public class StatsService {
-
+    private static final Map<String, Integer> statistics = new HashMap<>();
     /**
      * Обчислює статистику замовлень згідно з вказаним атрибутом.
      * @param orders список замовлень
      * @param attribute атрибут, за яким обчислюється статистика ("item", "orderId", "orderDate", "amount", "client")
-     * @return мапа, що містить статистику
      */
-    public static Map<String, Integer> calculateOrderStatistics(List<Order> orders, String attribute) {
-        Map<String, Integer> statistics = new HashMap<>();
+    public static void calculateOrderStatistics(List<Order> orders, String attribute) {
         for (Order order : orders) {
             List<String> items = order.getItems();
             if (attribute.equals("item")) {
@@ -29,7 +27,6 @@ public class StatsService {
                 statistics.put(value, statistics.getOrDefault(value, 0) + 1);
             }
         }
-        return statistics;
     }
 
     /**
@@ -59,5 +56,10 @@ public class StatsService {
                 yield null;
             }
         };
+    }
+
+    /* Гетер для статистики */
+    public static Map<String, Integer> getStatistics(){
+        return statistics;
     }
 }

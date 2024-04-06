@@ -2,7 +2,7 @@ package test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.model.Order;
-import org.example.parser.JsonParser;
+import org.example.parser.Parser;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,39 +18,39 @@ public class JsonParserTest {
 
     @Test
     void testParseOrders_ValidJson() {
-        List<Order> orders = JsonParser.parseOrders(objectMapper, jsonDirectory);
+        List<Order> orders = Parser.parseOrders(objectMapper, jsonDirectory);
         assertNotNull(orders);
         assertEquals(3, orders.size()); // Update expected size based on the provided JSON content
     }
 
     @Test
     void testParseOrders_FileNotFound() {
-        List<Order> orders = JsonParser.parseOrders(objectMapper, nonExistentFile);
+        List<Order> orders = Parser.parseOrders(objectMapper, nonExistentFile);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
     }
 
     @Test
     void testParseOrders_InvalidJson() {
-        List<Order> orders = JsonParser.parseOrders(objectMapper, invalidJsons);
+        List<Order> orders = Parser.parseOrders(objectMapper, invalidJsons);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
     }
     @Test
     void testParseOrders_EmptyDirectory() {
-        List<Order> orders = JsonParser.parseOrders(objectMapper, emptyDirectory);
+        List<Order> orders = Parser.parseOrders(objectMapper, emptyDirectory);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
     }
     @Test
     void testParseOrders_BigFile() {
-        List<Order> orders = JsonParser.parseOrders(objectMapper, bigFileDirectory);
+        List<Order> orders = Parser.parseOrders(objectMapper, bigFileDirectory);
         assertNotNull(orders);
         assertFalse(orders.isEmpty());
     }
     @Test
     void testParseOrders_ManyFiles() {
-        List<Order> orders = JsonParser.parseOrders(objectMapper, emptyDirectory);
+        List<Order> orders = Parser.parseOrders(objectMapper, emptyDirectory);
         assertNotNull(orders);
         assertTrue(orders.isEmpty());
     }
