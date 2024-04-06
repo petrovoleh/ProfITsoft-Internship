@@ -26,7 +26,7 @@ public class JsonFileCreator {
     private static final String[] NAMES = {"John", "Jane", "Michael", "Emma", "William", "Olivia", "James", "Sophia", "Benjamin", "Isabella"}; // Масив імен клієнтів
     private static final long START_DATE_MILLIS = 1672531200000L; // Початкова дата у мілісекундах з января 2023 року
     private static final long END_DATE_MILLIS = 1704067199000L;   // Кінцева дата у мілісекундах з грудня 2023 року
-
+    private static int percentDone =0;
     /**
      * Генерує випадкову дату між заданими початковою та кінцевою датами.
      * @return випадкова дата
@@ -97,7 +97,7 @@ public class JsonFileCreator {
      */
     private static void printProgress(int i, int numberOfEntries) {
         if (i % (numberOfEntries / 10) == 0) {
-            int percentDone = (int) (((double) i / numberOfEntries) * 100);
+            percentDone+=10;
             System.out.println("Прогрес: " + percentDone + "%");
         }
     }
@@ -125,6 +125,7 @@ public class JsonFileCreator {
             generator.setPrettyPrinter(printer);
 
             generator.writeStartArray();
+            System.out.println("Почато створення JSON файлу.");
             IntStream.rangeClosed(1, numberOfEntries)
                     .parallel()
                     .forEach(i -> processOrder(i, numberOfEntries, generator));
