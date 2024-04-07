@@ -86,7 +86,7 @@ public class JsonFileCreator {
             writeOrderToJson(generator, order); // Запис замовлення у формат JSON
             printProgress(i, numberOfEntries); // Вивід прогресу
         } catch (IOException e) {
-            throw new RuntimeException("Помилка запису замовлення у формат JSON", e);
+            throw new RuntimeException("Error writing order to JSON format", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class JsonFileCreator {
     private static void printProgress(int i, int numberOfEntries) {
         if (i % (numberOfEntries / 10) == 0) {
             percentDone+=10;
-            System.out.println("Прогрес: " + percentDone + "%");
+            System.out.println("Progress: " + percentDone + "%");
         }
     }
 
@@ -108,12 +108,12 @@ public class JsonFileCreator {
      */
     public static void main(String[] args) {
         if (args.length != 1) {
-            throw new IllegalArgumentException("Будь ласка, вкажіть кількість записів у вигляді аргументу командного рядка.");
+            throw new IllegalArgumentException("Please specify the number of entries as a command line argument.");
         }
 
         int numberOfEntries = Integer.parseInt(args[0]);
         if (numberOfEntries <= 0) {
-            throw new IllegalArgumentException("Кількість записів повинна бути позитивним числом.");
+            throw new IllegalArgumentException("The number of entries must be a positive number.");
         }
 
         try (FileOutputStream fos = new FileOutputStream("./test_jsons/big_file/orders.json");
@@ -125,15 +125,15 @@ public class JsonFileCreator {
             generator.setPrettyPrinter(printer);
 
             generator.writeStartArray();
-            System.out.println("Почато створення JSON файлу.");
+            System.out.println("Started creating JSON file.");
             IntStream.rangeClosed(1, numberOfEntries)
                     .parallel()
                     .forEach(i -> processOrder(i, numberOfEntries, generator));
             generator.writeEndArray();
 
-            System.out.println("JSON файл успішно створено.");
+            System.out.println("JSON file created successfully.");
         } catch (IOException e) {
-            throw new RuntimeException("Помилка створення JSON файлу", e);
+            throw new RuntimeException("Error creating JSON file", e);
         }
     }
 }

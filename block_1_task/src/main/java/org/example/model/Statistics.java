@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Цей клас представляє модель статистики замовлень для формату XML.
  */
-@JsonRootName(value = "статистика")
+@JsonRootName(value = "statistics")
 public class Statistics {
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<Map<String, Object>> item;
@@ -24,11 +24,11 @@ public class Statistics {
 
 
     /* Гетери та сетери */
-    public List<Map<String, Object>> getItems() {
+    public List<Map<String, Object>> getItem() {
         return item;
     }
 
-    public void setItems(List<Map<String, Object>> item) {
+    public void setItem(List<Map<String, Object>> item) {
         this.item = item;
     }
 }

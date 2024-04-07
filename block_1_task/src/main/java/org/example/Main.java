@@ -26,7 +26,7 @@ public class Main {
         List<Order> orders = Parser.parseOrders(jsonFactory, directoryPath,attribute);
 
         if (orders.isEmpty()) {
-            System.out.println("No orders found in the directory.");
+            System.err.println("No orders found in the directory.");
         } else {
             // Calculate order statistics
             System.out.println("Calculating order statistics...");
