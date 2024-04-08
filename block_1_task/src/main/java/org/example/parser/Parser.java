@@ -168,7 +168,7 @@ public class Parser {
             }
         } else {
             // Якщо список файлів порожній, виводимо повідомлення про помилку
-            System.err.println("No JSON files found in directory or directory is not exists: " + directoryPath);
+            System.err.println("No JSON files found in directory or directory does not exist: " + directoryPath);
         }
         // Повертаємо список замовлень
         return orders;

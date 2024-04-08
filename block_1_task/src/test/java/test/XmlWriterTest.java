@@ -11,30 +11,38 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Клас для тестування класу XmlWriter.
+ */
 public class XmlWriterTest {
+
+    /**
+     * Тест для перевірки запису статистики у XML з валідними даними.
+     *
+     * @throws IOException у випадку помилки вводу/виводу
+     */
     @Test
     void testWriteStatisticsToXML_ValidData() throws IOException {
-        // Prepare test data
+        // Підготування тестових даних
         Map<String, Integer> orderStatistics = new HashMap<>();
         orderStatistics.put("value1", 10);
         orderStatistics.put("value2", 20);
 
-        // Call the method under test
+        // Виклик методу, який тестується
         XmlWriter.writeStatisticsToXML(orderStatistics, "attribute");
 
-        // Read the content of the generated XML file
+        // Читання вмісту згенерованого XML-файлу
         String fileName = "order_statistics_by_attribute.xml";
         File outputFile = new File(fileName);
         assertTrue(outputFile.exists(), "Output file doesn't exist");
 
-        // Read content of the file
+        // Читання вмісту файлу
         byte[] fileContentBytes = java.nio.file.Files.readAllBytes(outputFile.toPath());
         String actualXmlString = new String(fileContentBytes, StandardCharsets.UTF_8);
 
-        // Define the expected XML content
+        // Очікуваний вміст XML
         String expectedXmlString = """
                 <statistics>
                   <item>
@@ -49,24 +57,47 @@ public class XmlWriterTest {
                 """;
         expectedXmlString = expectedXmlString.replace("\n", "\r\n");
 
-        // Assert that the content of the file matches the expected XML string
+        // Перевірка відповідності вмісту файлу очікуваному XML-рядку
         assertEquals(expectedXmlString.strip(), actualXmlString.strip(), "XML content mismatch");
     }
 
-
+    /**
+     * Тест для перевірки винятку під час запису у XML з порожнім іменем атрибуту.
+     */
     @Test
     void testWriteStatisticsToXML_Exception() {
-        // Redirect System.err to capture printed error messages
-        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-        System.setErr(new PrintStream(errorStream));
-
-        // Call the method under test with invalid file name to trigger IOException
+        // Виклик методу, який тестується з неправильним ім'ям файлу, щоб спричинити IllegalArgumentException
         Map<String, Integer> orderStatistics = new HashMap<>();
-        XmlWriter.writeStatisticsToXML(orderStatistics, ""); // Empty file name
-        // Verify error message
-        assertTrue(errorStream.toString().contains("Error writing order statistics to XML file: The attribute cannot be empty"));
 
-        // Restore original System.err
-        System.setErr(System.err);
+        // Використання assertThrows для перевірки, що IllegalArgumentException виникає
+        try {
+            XmlWriter.writeStatisticsToXML(orderStatistics, ""); // Порожнє ім'я файлу
+        } catch (IllegalArgumentException e) {
+            String message = e.getMessage();
+            System.err.println(message);
+            // Перевірка повідомлення про виняток
+            assertTrue(message.contains("The attribute cannot be empty"));
+            return;
+        }
+        fail();
+    }
+
+    /**
+     * Тест для перевірки винятку під час запису у XML з порожнім списком статистики.
+     */
+    @Test
+    void testWriteStatisticsToXML_InvalidData() {
+        // Підготування тестових даних
+        Map<String, Integer> orderStatistics = new HashMap<>();
+
+        try {
+            XmlWriter.writeStatisticsToXML(orderStatistics, "attribute");
+        } catch (IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            // Перевірка повідомлення про виняток
+            assertTrue(e.getMessage().contains("The orderStatistics cannot be empty"));
+            return;
+        }
+        fail();
     }
 }

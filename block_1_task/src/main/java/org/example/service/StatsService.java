@@ -34,9 +34,7 @@ public class StatsService {
      * @param attribute неправильний атрибут
      */
     private static void incorrectValue(String attribute) {
-        System.err.println("Error: Invalid attribute value: " + attribute);
-        System.err.println("Valid attributes: orderId, orderDate, amount, client, item");
-        System.exit(1);
+        throw new IllegalArgumentException("Error: Invalid attribute value: " + attribute + "\nValid attributes: orderId, orderDate, amount, client, item");
     }
 
     /**

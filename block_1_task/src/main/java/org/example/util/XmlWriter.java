@@ -7,6 +7,7 @@ import org.example.model.Statistics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ public class XmlWriter {
         // Перевірка на валідність атрибуту
         if (attribute == null || attribute.trim().isEmpty()) {
             throw new IllegalArgumentException("Error writing order statistics to XML file: The attribute cannot be empty");
+        }
+        if (orderStatistics == null || orderStatistics.isEmpty()) {
+            throw new IllegalArgumentException("Error writing order statistics to XML file: The orderStatistics cannot be empty");
         }
 
         // Формування імені файлу для запису
@@ -58,15 +62,11 @@ public class XmlWriter {
      * @return список мап, що містить дані для запису у файл
      */
     private static List<Map<String, Object>> prepareDataForXML(Map<String, Integer> orderStatistics) {
-        // Ініціалізація списку для підготовлених даних
         List<Map<String, Object>> items = new ArrayList<>();
-        // Обробка кожного запису статистики
         for (Map.Entry<String, Integer> entry : orderStatistics.entrySet()) {
-            // Створення мапи для кожного елемента
-            Map<String, Object> itemMap = Map.of(
-                    "value", entry.getKey(),
-                    "count", entry.getValue()
-            );
+            Map<String, Object> itemMap = new LinkedHashMap<>();
+            itemMap.put("value", entry.getKey());
+            itemMap.put("count", entry.getValue());
             items.add(itemMap);
         }
         return items;
