@@ -1,10 +1,10 @@
-package org.example.filecreator;
+package com.petrovoleh.filecreator;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.model.Order;
+import com.petrovoleh.model.Order;
 
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;

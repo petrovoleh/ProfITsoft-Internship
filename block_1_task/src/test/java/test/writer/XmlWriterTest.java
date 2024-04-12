@@ -1,12 +1,10 @@
 package test.writer;
 
-import org.example.util.XmlWriter;
+import com.petrovoleh.util.XmlWriter;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;

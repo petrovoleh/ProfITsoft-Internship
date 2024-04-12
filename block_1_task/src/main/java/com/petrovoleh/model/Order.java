@@ -1,4 +1,4 @@
-package org.example.model;
+package com.petrovoleh.model;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -1,12 +1,10 @@
 package test.parser;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import org.example.model.Order;
-import org.example.parser.Parser;
-import org.example.service.StatsService;
+import com.petrovoleh.parser.Parser;
+import com.petrovoleh.service.StatsService;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;

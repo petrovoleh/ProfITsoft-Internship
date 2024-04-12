@@ -1,4 +1,4 @@
-package org.example.model;
+package com.petrovoleh.model;
 
 /**
  * Цей клас представляє модель клієнта з іменем та електронною поштою.

@@ -1,12 +1,10 @@
-package org.example;
+package com.petrovoleh;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import org.example.model.Order;
-import org.example.parser.Parser;
-import org.example.service.StatsService;
-import org.example.util.XmlWriter;
+import com.petrovoleh.parser.Parser;
+import com.petrovoleh.service.StatsService;
+import com.petrovoleh.util.XmlWriter;
 
-import java.util.List;
 import java.util.Map;
 
 /**

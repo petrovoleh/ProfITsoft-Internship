@@ -1,8 +1,8 @@
-package org.example.util;
+package com.petrovoleh.util;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.example.model.Statistics;
+import com.petrovoleh.model.Statistics;
 
 import java.io.File;
 import java.io.IOException;

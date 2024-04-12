@@ -1,6 +1,6 @@
-package org.example.service;
+package com.petrovoleh.service;
 
-import org.example.model.Order;
+import com.petrovoleh.model.Order;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

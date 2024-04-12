@@ -1,4 +1,4 @@
-package org.example.model;
+package com.petrovoleh.model;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;

@@ -1,7 +1,7 @@
 package test.parser;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import org.example.parser.Parser;
+import com.petrovoleh.parser.Parser;
 import org.junit.jupiter.api.Test;
 
 public class MultiThreadTest {
