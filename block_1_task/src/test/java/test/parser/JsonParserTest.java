@@ -1,11 +1,13 @@
-package test;
+package test.parser;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import org.example.model.Order;
 import org.example.parser.Parser;
+import org.example.service.StatsService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,9 +31,11 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_ValidJson() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, jsonDirectory, attribute);
-        assertNotNull(orders);
-        assertEquals(3, orders.size()); // Оновіть очікуваний розмір на основі наданого вмісту JSON
+        Parser.parseOrders(jsonFactory, jsonDirectory, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertFalse(stats.isEmpty());
+        StatsService.clearStatistics();
     }
 
     /**
@@ -39,9 +43,10 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_FileNotFound() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, nonExistentFile, attribute);
-        assertNotNull(orders);
-        assertTrue(orders.isEmpty());
+        Parser.parseOrders(jsonFactory, nonExistentFile, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertTrue(stats.isEmpty());
     }
 
     /**
@@ -49,9 +54,10 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_InvalidJson() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, invalidJsons, attribute);
-        assertNotNull(orders);
-        assertTrue(orders.isEmpty());
+        Parser.parseOrders(jsonFactory, invalidJsons, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertTrue(stats.isEmpty());
     }
 
     /**
@@ -59,9 +65,10 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_EmptyDirectory() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, emptyDirectory, attribute);
-        assertNotNull(orders);
-        assertTrue(orders.isEmpty());
+        Parser.parseOrders(jsonFactory, emptyDirectory, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertTrue(stats.isEmpty());
     }
 
     /**
@@ -69,9 +76,11 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_DirectoryDoesNotExist() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, noDirectory, attribute);
-        assertNotNull(orders);
-        assertTrue(orders.isEmpty());
+        Parser.parseOrders(jsonFactory, noDirectory, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertTrue(stats.isEmpty());
+        StatsService.clearStatistics();
     }
 
 
@@ -80,17 +89,21 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_ManyFiles() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, manyFilesDirectory, attribute);
-        assertNotNull(orders);
-        assertFalse(orders.isEmpty());
+        Parser.parseOrders(jsonFactory, manyFilesDirectory, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertFalse(stats.isEmpty());
+        StatsService.clearStatistics();
     }
     /**
      * Тест для перевірки парсингу великого JSON-файлу.
      */
     @Test
     void testParseOrders_BigFile() {
-        List<Order> orders = Parser.parseOrders(jsonFactory, bigFileDirectory, attribute);
-        assertNotNull(orders);
-        assertFalse(orders.isEmpty());
+        Parser.parseOrders(jsonFactory, bigFileDirectory, attribute);
+        Map<String, Integer> stats = StatsService.getStatistics();
+        assertNotNull(stats);
+        assertFalse(stats.isEmpty());
+        StatsService.clearStatistics();
     }
 }

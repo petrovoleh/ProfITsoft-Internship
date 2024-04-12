@@ -34,13 +34,13 @@ public class Main {
 
         // Розбір всіх замовлень з JSON-файлів у директорії
         System.out.println("Parsing files and calculating order statistics...");
-        List<Order> orders = Parser.parseOrders(jsonFactory, directoryPath,attribute);
-
-        if (orders.isEmpty()) {
+        Parser.parseOrdersThreads(jsonFactory, directoryPath,attribute, 10);
+        Map<String, Integer> orderStatistics = StatsService.getStatistics();
+        if (orderStatistics.isEmpty()) {
             System.err.println("No orders found in the directory.");
+
         } else {
             System.out.println("Writing statistics to file...");
-            Map<String, Integer> orderStatistics = StatsService.getStatistics();
             XmlWriter.writeStatisticsToXML(orderStatistics, attribute);
         }
     }

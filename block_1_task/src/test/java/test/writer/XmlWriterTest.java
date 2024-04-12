@@ -1,4 +1,4 @@
-package test;
+package test.writer;
 
 import org.example.util.XmlWriter;
 import org.junit.jupiter.api.Test;

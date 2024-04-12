@@ -60,4 +60,8 @@ public class StatsService {
     public static Map<String, Integer> getStatistics(){
         return statistics;
     }
+    /*Функція для очистки статистики під час тестування */
+    public static void clearStatistics(){
+        statistics.clear();
+    }
 }
