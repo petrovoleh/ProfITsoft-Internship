@@ -29,7 +29,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_ValidJson() {
-        Parser.parseOrders(jsonFactory, jsonDirectory, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, jsonDirectory, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertFalse(stats.isEmpty());
@@ -41,7 +41,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_FileNotFound() {
-        Parser.parseOrders(jsonFactory, nonExistentFile, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, nonExistentFile, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertTrue(stats.isEmpty());
@@ -52,7 +52,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_InvalidJson() {
-        Parser.parseOrders(jsonFactory, invalidJsons, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, invalidJsons, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertTrue(stats.isEmpty());
@@ -63,7 +63,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_EmptyDirectory() {
-        Parser.parseOrders(jsonFactory, emptyDirectory, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, emptyDirectory, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertTrue(stats.isEmpty());
@@ -74,7 +74,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_DirectoryDoesNotExist() {
-        Parser.parseOrders(jsonFactory, noDirectory, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, noDirectory, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertTrue(stats.isEmpty());
@@ -87,7 +87,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_ManyFiles() {
-        Parser.parseOrders(jsonFactory, manyFilesDirectory, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, manyFilesDirectory, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertFalse(stats.isEmpty());
@@ -98,7 +98,7 @@ public class JsonParserTest {
      */
     @Test
     void testParseOrders_BigFile() {
-        Parser.parseOrders(jsonFactory, bigFileDirectory, attribute);
+        Parser.parseOrdersOneThread(jsonFactory, bigFileDirectory, attribute);
         Map<String, Integer> stats = StatsService.getStatistics();
         assertNotNull(stats);
         assertFalse(stats.isEmpty());

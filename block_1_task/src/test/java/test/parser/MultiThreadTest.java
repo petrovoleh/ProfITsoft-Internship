@@ -16,7 +16,7 @@ public class MultiThreadTest {
 
         for (int threadCount : threadCounts) {
             long startTime = System.currentTimeMillis();
-            Parser.parseOrdersThreads(jsonFactory, DIRECTORY_PATH, ATTRIBUTE, threadCount);
+            Parser.parseOrders(jsonFactory, DIRECTORY_PATH, ATTRIBUTE, threadCount);
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
             System.out.println("Time taken with " + threadCount + " thread(s): " + duration + " ms");

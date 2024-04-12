@@ -32,7 +32,7 @@ public class Main {
 
         // Розбір всіх замовлень з JSON-файлів у директорії
         System.out.println("Parsing files and calculating order statistics...");
-        Parser.parseOrdersThreads(jsonFactory, directoryPath,attribute, 10);
+        Parser.parseOrders(jsonFactory, directoryPath,attribute, 10);
         Map<String, Integer> orderStatistics = StatsService.getStatistics();
         if (orderStatistics.isEmpty()) {
             System.err.println("No orders found in the directory.");

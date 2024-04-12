@@ -117,14 +117,14 @@ public class Parser {
     }
 
     /**
-     * Метод для парсингу замовлень з JSON-файлів у директорії.
+     * Метод для парсингу замовлень з JSON-файлів у директорії(для тестів з одним потоком).
      *
      * @param jsonFactory   фабрика JSON
      * @param directoryPath шлях до директорії
      * @param attribute     атрибут для обчислення статистики
      */
-    public static void parseOrders(JsonFactory jsonFactory, String directoryPath, String attribute) {
-        parseOrdersThreads(jsonFactory, directoryPath, attribute, 4);
+    public static void parseOrdersOneThread(JsonFactory jsonFactory, String directoryPath, String attribute) {
+        parseOrders(jsonFactory, directoryPath, attribute, 4);
     }
 
     /**
@@ -135,7 +135,7 @@ public class Parser {
      * @param attribute     атрибут для обчислення статистики
      * @param threadCount   кількість потоків
      */
-    public static void parseOrdersThreads(JsonFactory jsonFactory, String directoryPath, String attribute, int threadCount) {
+    public static void parseOrders(JsonFactory jsonFactory, String directoryPath, String attribute, int threadCount) {
         List<File> files = getAllFilesInDirectory(directoryPath);
         if (files.isEmpty()) {
             logError(null, new IOException("No JSON files found in directory or directory does not exist: " + directoryPath));
