@@ -29,10 +29,10 @@ public class XmlWriterTest {
         orderStatistics.put("value2", 20);
 
         // Виклик методу, який тестується
-        XmlWriter.writeStatisticsToXML(orderStatistics, "attribute");
+        XmlWriter.writeStatisticsToXML("./test",orderStatistics, "attribute");
 
         // Читання вмісту згенерованого XML-файлу
-        String fileName = "order_statistics_by_attribute.xml";
+        String fileName = "./test/order_statistics_by_attribute.xml";
         File outputFile = new File(fileName);
         assertTrue(outputFile.exists(), "Output file doesn't exist");
 
@@ -69,7 +69,7 @@ public class XmlWriterTest {
 
         // Використання assertThrows для перевірки, що IllegalArgumentException виникає
         try {
-            XmlWriter.writeStatisticsToXML(orderStatistics, ""); // Порожнє ім'я файлу
+            XmlWriter.writeStatisticsToXML("./test",orderStatistics, ""); // Порожнє ім'я файлу
         } catch (IllegalArgumentException e) {
             String message = e.getMessage();
             System.err.println(message);
@@ -89,7 +89,7 @@ public class XmlWriterTest {
         Map<String, Integer> orderStatistics = new HashMap<>();
 
         try {
-            XmlWriter.writeStatisticsToXML(orderStatistics, "attribute");
+            XmlWriter.writeStatisticsToXML("./test",orderStatistics, "attribute");
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             // Перевірка повідомлення про виняток

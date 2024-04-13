@@ -19,41 +19,82 @@ public class XmlWriter {
     /**
      * Записує статистику замовлень у форматі XML у вказаний файл.
      *
-     * @param orderStatistics мапа, що містить статистику замовлень (атрибут -> кількість)
-     * @param attribute       атрибут, за яким обчислюється статистика
+     * @param directoryPath    шлях до директорії для запису файлу
+     * @param orderStatistics  мапа, що містить статистику замовлень (атрибут -> кількість)
+     * @param attribute        атрибут, за яким обчислюється статистика
      * @throws IllegalArgumentException у разі, якщо атрибут порожній або містить лише пробіли
      * @throws RuntimeException         у разі помилки при записі у файл
      */
-    public static void writeStatisticsToXML(Map<String, Integer> orderStatistics, String attribute) {
-        // Перевірка на валідність атрибуту
+    public static void writeStatisticsToXML(String directoryPath, Map<String, Integer> orderStatistics, String attribute) {
+        validateInputs(orderStatistics, attribute);
+
+        String fileName = generateFileName(directoryPath, attribute);
+        createDirectoryIfNotExists(directoryPath);
+        writeStatisticsToFile(orderStatistics, fileName);
+    }
+
+    /**
+     * Перевіряє вхідні дані на валідність.
+     *
+     * @param orderStatistics мапа, що містить статистику замовлень
+     * @param attribute       атрибут, за яким обчислюється статистика
+     * @throws IllegalArgumentException у разі невалідності вхідних даних
+     */
+    private static void validateInputs(Map<String, Integer> orderStatistics, String attribute) {
         if (attribute == null || attribute.trim().isEmpty()) {
             throw new IllegalArgumentException("Error writing order statistics to XML file: The attribute cannot be empty");
         }
         if (orderStatistics == null || orderStatistics.isEmpty()) {
             throw new IllegalArgumentException("Error writing order statistics to XML file: The orderStatistics cannot be empty");
         }
+    }
 
-        // Формування імені файлу для запису
-        String fileName = "order_statistics_by_" + attribute.trim() + ".xml";
+    /**
+     * Генерує ім'я файлу для запису статистики.
+     *
+     * @param directoryPath шлях до директорії для запису файлу
+     * @param attribute     атрибут, за яким обчислюється статистика
+     * @return ім'я файлу
+     */
+    private static String generateFileName(String directoryPath, String attribute) {
+        return directoryPath + "/" + "order_statistics_by_" + attribute.trim() + ".xml";
+    }
 
+    /**
+     * Створює директорію, якщо вона не існує.
+     *
+     * @param directoryPath шлях до директорії для перевірки та створення
+     */
+    private static void createDirectoryIfNotExists(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+    }
+
+    /**
+     * Записує статистику у файл у форматі XML.
+     *
+     * @param orderStatistics мапа, що містить статистику замовлень
+     * @param fileName        ім'я файлу для запису
+     * @throws RuntimeException у разі помилки при записі у файл
+     */
+    private static void writeStatisticsToFile(Map<String, Integer> orderStatistics, String fileName) {
         try {
-            // Ініціалізація XML мапера
             XmlMapper xmlMapper = new XmlMapper();
             xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
-            // Підготовка даних для запису у файл
             List<Map<String, Object>> items = prepareDataForXML(orderStatistics);
 
-            // Запис даних у файл
             File outputFile = new File(fileName);
             xmlMapper.writeValue(outputFile, new Statistics(items));
             System.out.println("Order statistics written to " + fileName);
         } catch (IOException e) {
-            // Обробка помилки при записі у файл
             System.err.println("Error writing order statistics to XML file: " + e.getMessage());
             throw new RuntimeException("Error writing order statistics to XML file", e);
         }
     }
+
 
     /**
      * Підготовлює дані для запису у файл у форматі XML.

@@ -32,14 +32,14 @@ public class Main {
 
         // Розбір всіх замовлень з JSON-файлів у директорії
         System.out.println("Parsing files and calculating order statistics...");
-        Parser.parseOrders(jsonFactory, directoryPath,attribute, 10);
+        Parser.parseOrders(jsonFactory, directoryPath, attribute, 10);
         Map<String, Integer> orderStatistics = StatsService.getStatistics();
         if (orderStatistics.isEmpty()) {
             System.err.println("No orders found in the directory.");
 
         } else {
             System.out.println("Writing statistics to file...");
-            XmlWriter.writeStatisticsToXML(orderStatistics, attribute);
+            XmlWriter.writeStatisticsToXML(directoryPath, orderStatistics, attribute);
         }
     }
 }
