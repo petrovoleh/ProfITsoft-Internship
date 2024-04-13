@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 
 public class MultiThreadTest {
 
-    private static final String DIRECTORY_PATH = "./test_jsons/big_file"; // Replace with actual directory path
-    private static final String ATTRIBUTE = "item"; // Replace with actual attribute
+    private static final String DIRECTORY_PATH = "./test_jsons/many_files"; // Replace with actual directory path
+    private static final String ATTRIBUTE = "amount"; // Replace with actual attribute
 
     @Test
     public void testParsingSpeed() {

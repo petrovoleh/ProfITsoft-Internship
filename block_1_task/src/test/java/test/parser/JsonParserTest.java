@@ -18,7 +18,7 @@ public class JsonParserTest {
     private static final String emptyDirectory = "./test_jsons/empty_directory";
     private static final String noDirectory = "./test_jsons/nodir";
     private static final String invalidJsons = "./test_jsons/invalid_json";
-    private static final String jsonDirectory = "./test_jsons";
+    private static final String jsonDirectory = "./test_jsons/valid_json";
     private static final String bigFileDirectory = "./test_jsons/big_file";
     private static final String manyFilesDirectory = "./test_jsons/many_files";
     private static final String nonExistentFile = "nonexistent_orders.json";

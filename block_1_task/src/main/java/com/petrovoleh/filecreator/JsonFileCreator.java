@@ -84,6 +84,7 @@ public class JsonFileCreator {
      */
     private static void processOrder(int i, int numberOfEntries, JsonGenerator generator) {
         Order order = new Order();
+
         order.setOrderId(i);
         order.setOrderDate(generateRandomDate());
         order.setAmount(ThreadLocalRandom.current().nextInt(1, 101)); // Випадкова сума замовлення від 1 до 100
@@ -156,12 +157,12 @@ public class JsonFileCreator {
     }
 
     /**
-     * Creates a JSON file with the specified number of entries.
+     Створює файл JSON із вказаною кількістю записів.
      *
-     * @param filePath        the path of the JSON file to create
-     * @param numberOfEntries the number of entries to include in the file
-     * @throws IOException if an I/O error occurs while creating the file
-     */
+     * @param filePath шлях до файлу JSON для створення
+     * @param numberOfEntries кількість записів для включення у файл
+     * @throws IOException, якщо під час створення файлу виникає помилка введення-виведення
+     * */
     private static void createJsonFile(String filePath, int numberOfEntries) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(filePath);
              BufferedOutputStream bos = new BufferedOutputStream(fos);
@@ -172,6 +173,7 @@ public class JsonFileCreator {
             generator.setPrettyPrinter(printer);
 
             generator.writeStartArray();
+            percentDone = 0;
             System.out.println("Started creating JSON file: " + filePath);
             IntStream.rangeClosed(1, numberOfEntries)
                     .parallel()
@@ -183,11 +185,11 @@ public class JsonFileCreator {
     }
 
     /**
-     * Copies a file from the source path to the destination path.
+     * Копіює файл із вихідного шляху в цільовий шлях.
      *
-     * @param sourcePath the path of the source file
-     * @param destPath   the path of the destination file
-     * @throws IOException if an I/O error occurs while copying the file
+     * @param sourcePath шлях до вихідного файлу
+     * @param destPath шлях до цільового файлу
+     * @throws IOException, якщо під час копіювання файлу виникає помилка введення-виведення
      */
     private static void copyFile(String sourcePath, String destPath) throws IOException {
         File sourceFile = new File(sourcePath);
