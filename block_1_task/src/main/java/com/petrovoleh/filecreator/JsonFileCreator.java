@@ -19,8 +19,9 @@ import java.util.stream.IntStream;
 
 /**
  * Цей клас призначений для створення JSON файлу для проєкту.
- * Він отримує один цілочисельний аргумент, який визначає кількість сутностей в JSON файлі.
- * Зберігає файл в ./test_jsons/big_file/orders.json, що може бути змінено в коді.
+ * @param args[0] кількість об'єктів в файлі
+ * @param args[1] шлях до директорії
+ * @param args[2] кількість файлів
  */
 public class JsonFileCreator {
     private static final ObjectMapper MAPPER = new ObjectMapper(); // Об'єкт ObjectMapper для серіалізації об'єктів в JSON
