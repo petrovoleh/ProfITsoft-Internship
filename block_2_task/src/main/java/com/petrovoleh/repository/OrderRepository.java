@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class OrderRepository {
     }
 
     private void createOrdersTable() {
-        String sql = "CREATE TABLE orders (id SERIAL PRIMARY KEY, client VARCHAR(100), amount INTEGER, items JSONB, order_date TIMESTAMP, email VARCHAR(100) NOT NULL)";
+        String sql = "CREATE TABLE orders (id SERIAL PRIMARY KEY, client VARCHAR(100)REFERENCES clients(name), amount INTEGER, items JSONB, order_date TIMESTAMP, email VARCHAR(100) NOT NULL)";
         jdbcTemplate.execute(sql);
     }
 
@@ -52,40 +53,40 @@ public class OrderRepository {
             return null; // Return null if no order with the specified id exists
         }
     }
-
-    public Order createOrder(Order order) {
-        System.out.println("createOrder");
-        String sql = "INSERT INTO orders (order_date, client, amount, items) VALUES (?, ?, ?, ?::jsonb)";
-
+    private String jsonToItems(Order order){
         ObjectMapper objectMapper = new ObjectMapper();
+        String itemsJson = null;
         try {
-            String itemsJson = objectMapper.writeValueAsString(order.getItems());
-            int rowsInserted = jdbcTemplate.update(sql, order.getOrderDate(), order.getClient(),
-                    order.getAmount(), itemsJson);
-            if (rowsInserted > 0) {
-                return order;
-            }
+            itemsJson = objectMapper.writeValueAsString(order.getItems());
         } catch (JsonProcessingException e) {
-            e.printStackTrace(); // Handle serialization error
+            throw new RuntimeException(e);
         }
+        return itemsJson;
+    }
+    public Order createOrder(Order order) {
+        String sql = "INSERT INTO orders (order_date, client, amount, items) VALUES (?, ?, ?, ?::jsonb) RETURNING id";
+
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, order.getOrderDate(), order.getClient(),
+                order.getAmount(), jsonToItems(order));
+        if (rowSet.next()) {
+            int id = rowSet.getInt("id");
+            order.setOrderId(id);
+            System.out.println("Order created: " + order.getOrderId());
+            return order;
+        }
+
         return null; // Return null if insertion failed
     }
 
     public Order updateOrder(Order order) {
-        String sql = "UPDATE orders SET order_date = ?, client = ?, amount = ?, items = ?::jsonb WHERE orderId = ?";
+        String sql = "UPDATE orders SET order_date = ?, client = ?, amount = ?, items = ?::jsonb WHERE id = ?";
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String itemsJson = objectMapper.writeValueAsString(order.getItems());
             int rowsUpdated = jdbcTemplate.update(sql, order.getOrderDate(), order.getClient(),
-                    order.getAmount(), itemsJson,
+                    order.getAmount(), jsonToItems(order),
                     order.getOrderId());
             if (rowsUpdated > 0) {
                 return order;
             }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace(); // Handle serialization error
-        }
         return null; // Return null if update failed
     }
 

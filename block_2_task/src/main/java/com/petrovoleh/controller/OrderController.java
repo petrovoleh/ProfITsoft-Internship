@@ -1,7 +1,10 @@
 package com.petrovoleh.controller;
 
+import com.petrovoleh.model.Client;
 import com.petrovoleh.model.Order;
 import com.petrovoleh.model.Order;
+import com.petrovoleh.model.OrderResponse;
+import com.petrovoleh.service.ClientService;
 import com.petrovoleh.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +18,12 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService service;
+    private final ClientService clientService;
 
     @Autowired
-    public OrderController(OrderService service) {
+    public OrderController(OrderService service, ClientService clientService) {
         this.service = service;
+        this.clientService = clientService;
     }
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
@@ -27,10 +32,15 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable int id) {
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable int id) {
         Order order = service.getOrderById(id);
+
         if (order != null) {
-            return ResponseEntity.ok(order);
+            Client client = clientService.getClientByName(order.getClient());
+            if (client != null) {
+                OrderResponse orderResponse = new OrderResponse(order, client);
+                return ResponseEntity.ok(orderResponse);
+            }
         }
         return ResponseEntity.notFound().build();
     }
