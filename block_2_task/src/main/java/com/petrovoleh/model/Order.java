@@ -20,12 +20,12 @@ public class Order {
 
     @ElementCollection
     @Column(name = "items", columnDefinition = "jsonb")
-    private String items; // Список товарів
+    private List<String> items; // Список товарів
 
     // Constructors, getters, setters
     public Order() {}
 
-    public Order(int orderId, Date orderDate, String client, int amount, String items) {
+    public Order(int orderId, Date orderDate, String client, int amount, List<String> items) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.client = client;
@@ -65,11 +65,11 @@ public class Order {
         this.amount = amount;
     }
 
-    public String getItems() {
+    public List<String> getItems() {
         return items;
     }
 
-    public void setItems(String items) {
+    public void setItems(List<String> items) {
         this.items = items;
     }
 }

@@ -52,4 +52,16 @@ public class OrderService {
         return false; // Order not found
     }
 
+    public int saveOrders(List<Order> orders) {
+        int successfulImports = 0;
+        for (Order order : orders) {
+            try {
+                orderRepository.createOrder(order);
+                successfulImports++;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return successfulImports;
+    }
 }

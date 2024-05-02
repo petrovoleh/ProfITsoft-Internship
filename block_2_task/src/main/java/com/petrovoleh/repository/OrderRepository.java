@@ -53,7 +53,7 @@ public class OrderRepository {
             return null; // Return null if no order with the specified id exists
         }
     }
-    private String jsonToItems(Order order){
+    private String itemsToJson(Order order){
         ObjectMapper objectMapper = new ObjectMapper();
         String itemsJson = null;
         try {
@@ -67,7 +67,7 @@ public class OrderRepository {
         String sql = "INSERT INTO orders (order_date, client, amount, items) VALUES (?, ?, ?, ?::jsonb) RETURNING id";
 
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, order.getOrderDate(), order.getClient(),
-                order.getAmount(), jsonToItems(order));
+                order.getAmount(), itemsToJson(order));
         if (rowSet.next()) {
             int id = rowSet.getInt("id");
             order.setOrderId(id);
@@ -82,7 +82,7 @@ public class OrderRepository {
         String sql = "UPDATE orders SET order_date = ?, client = ?, amount = ?, items = ?::jsonb WHERE id = ?";
 
             int rowsUpdated = jdbcTemplate.update(sql, order.getOrderDate(), order.getClient(),
-                    order.getAmount(), jsonToItems(order),
+                    order.getAmount(), itemsToJson(order),
                     order.getOrderId());
             if (rowsUpdated > 0) {
                 return order;

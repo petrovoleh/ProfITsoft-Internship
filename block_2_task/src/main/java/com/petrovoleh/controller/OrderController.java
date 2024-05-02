@@ -4,6 +4,7 @@ import com.petrovoleh.model.Client;
 import com.petrovoleh.model.Order;
 import com.petrovoleh.model.Order;
 import com.petrovoleh.model.OrderResponse;
+import com.petrovoleh.parser.parser.Parser;
 import com.petrovoleh.service.ClientService;
 import com.petrovoleh.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,26 @@ public class OrderController {
         if (deleted) {
             return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.notFound().build();
+    }
+
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadOrders(@RequestBody List<Order> orders) {
+        // Парсити JSON-файл і передавати список замовлень на обробку сервісу
+        int successfulImports = service.saveOrders(orders);
+        int failedImports = orders.size() - successfulImports;
+        String response = "{\"successfulImports\": " + successfulImports + ", \"failedImports\": " + failedImports + "}";
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("/_report")
+    public ResponseEntity<OrderResponse> postReport(@PathVariable int id) {
+
+        return ResponseEntity.notFound().build();
+    }
+    @PostMapping("/_list")
+    public ResponseEntity<OrderResponse> postList(@PathVariable int id) {
+
         return ResponseEntity.notFound().build();
     }
 }
