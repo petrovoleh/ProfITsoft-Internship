@@ -1,0 +1,45 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Changeset to create 'orders' table -->
+    <changeSet id="create-orders-table" author="postgres">
+        <createTable tableName="orders">
+            <column name="orderId" type="int">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="orderDate" type="datetime"/>
+            <column name="client" type="varchar(255)"/>
+            <column name="amount" type="int"/>
+            <column name="items" type="jsonb"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changeset to create 'clients' table -->
+    <changeSet id="create-clients-table" author="postgres">
+        <createTable tableName="clients">
+            <column name="name" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Changeset to insert sample data into 'clients' table -->
+    <changeSet id="insert-sample-clients-data" author="postgres">
+        <sql>
+            INSERT INTO clients (name, email) VALUES ('Client1', 'client1@example.com');
+            INSERT INTO clients (name, email) VALUES ('Client2', 'client2@example.com');
+        </sql>
+    </changeSet>
+
+    <!-- Changeset to insert sample data into 'orders' table -->
+    <changeSet id="insert-sample-orders-data" author="postgres">
+        <sql>
+            INSERT INTO orders (orderId, orderDate, client, amount, items) VALUES (1, '2024-05-01', 'Client1', 100, '["item1", "item2"]');
+            INSERT INTO orders (orderId, orderDate, client, amount, items) VALUES (2, '2024-05-02', 'Client2', 200, '["item3", "item4"]');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
