@@ -92,7 +92,7 @@ public class OrderControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/orders/_report")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
