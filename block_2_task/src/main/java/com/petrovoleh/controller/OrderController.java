@@ -6,7 +6,10 @@ import com.petrovoleh.parser.parser.Parser;
 import com.petrovoleh.service.ClientService;
 import com.petrovoleh.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +28,6 @@ public class OrderController {
     public OrderController(OrderService service, ClientService clientService) {
         this.service = service;
         this.clientService = clientService;
-    }
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
-        List<Order> orders = service.getAllOrders();
-        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{id}")
@@ -83,15 +81,69 @@ public class OrderController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/_report")
-    public ResponseEntity<OrderResponse> postReport(@PathVariable int id) {
+    public ResponseEntity<byte[]> generateReport(@RequestBody OrderListRequest request) {
+        List<Order> allOrders = service.getAllOrdersByName(request.getName());
+        // Generate CSV content
+        String csvContent = generateCsvContent(allOrders);
 
-        return ResponseEntity.notFound().build();
+        // Set headers for CSV response
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentDispositionFormData("attachment", "report.csv");
+
+        // Convert CSV content to byte array
+        byte[] csvBytes = csvContent.getBytes();
+
+        // Return CSV file as response
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(csvBytes);
     }
     @PostMapping("/_list")
-    public ResponseEntity<List<Order>> postList(@RequestBody OrderListRequest request) {
-        List<Order> orders = service.getOrdersByName(request.getName(), request.getPage(), request.getSize());
+    public ResponseEntity<OrderListResponse> postList(@RequestBody OrderListRequest request) {
+        Page<Order> ordersPage = service.getOrdersByName(request.getName(), request.getPage(), request.getSize());
+
+        List<Order> orders = ordersPage.getContent(); // Get list of orders for the current page
+        int totalPages = ordersPage.getTotalPages(); // Get total number of pages
+
+        OrderListResponse response = new OrderListResponse(orders, totalPages);
+        return ResponseEntity.ok(response);
+    }
 
 
-        return ResponseEntity.ok(orders);
+    private String generateCsvContent(List<Order> orders) {
+        StringBuilder csvContent = new StringBuilder();
+
+        // Append CSV header
+        csvContent.append("Order ID,Order Date,Client,Amount,Items\n");
+
+        // Iterate over each order and append CSV rows
+        for (Order order : orders) {
+            // Append order details as CSV row
+            csvContent.append(order.getOrderId()).append(",")
+                    .append(order.getOrderDate()).append(",")
+                    .append(order.getClient()).append(",")
+                    .append(order.getAmount()).append(",")
+                    .append(formatItems(order.getItems())).append("\n");
+        }
+
+        return csvContent.toString();
+    }
+
+    // Method to format items list as a comma-separated string
+    private String formatItems(List<String> items) {
+        if (items == null || items.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder formattedItems = new StringBuilder();
+        for (String item : items) {
+            formattedItems.append(item).append(", ");
+        }
+
+        // Remove trailing comma and space
+        formattedItems.delete(formattedItems.length() - 2, formattedItems.length());
+
+        return formattedItems.toString();
     }
 }

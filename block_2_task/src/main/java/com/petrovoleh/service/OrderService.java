@@ -18,10 +18,6 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public List<Order> getAllOrders() {
-        return orderRepository.getAllOrders();
-    }
-
     public Order getOrderById(int id) {
         return orderRepository.getOrderById(id);
     }
@@ -65,8 +61,10 @@ public class OrderService {
         }
         return successfulImports;
     }
-    public List<Order> getOrdersByName(String name, int page, int size) {
-        Page<com.petrovoleh.model.Order> ordersPage = orderRepository.findByClient(name, page, size);
-        return ordersPage.getContent();
+    public Page<Order> getOrdersByName(String name, int page, int size) {
+        return orderRepository.findByClient(name, page, size);
+    }
+    public List<Order> getAllOrdersByName(String name) {
+        return orderRepository.findAllByClient(name);
     }
 }

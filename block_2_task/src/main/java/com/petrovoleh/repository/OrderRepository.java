@@ -1,6 +1,7 @@
 package com.petrovoleh.repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petrovoleh.model.Order;
 import jakarta.annotation.PostConstruct;
@@ -41,23 +42,36 @@ public class OrderRepository {
     }
 
     private void createOrdersTable() {
-        String sql = "CREATE TABLE orders (id SERIAL PRIMARY KEY, client VARCHAR(100)REFERENCES clients(name), amount INTEGER, items JSONB, order_date TIMESTAMP, email VARCHAR(100) NOT NULL)";
+        String sql = "CREATE TABLE orders (id SERIAL PRIMARY KEY, client VARCHAR(100)REFERENCES clients(name), amount INTEGER, items JSONB, order_date TIMESTAMP)";
         jdbcTemplate.execute(sql);
-    }
-
-    public List<Order> getAllOrders() {
-        String sql = "SELECT * FROM orders";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class));
     }
 
     public Order getOrderById(int id) {
         String sql = "SELECT * FROM orders WHERE id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Order.class));
+            return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> {
+                Order order = new Order();
+                order.setOrderId(rs.getInt("id"));
+                order.setOrderDate(rs.getDate("order_date"));
+                order.setClient(rs.getString("client"));
+                order.setAmount(rs.getInt("amount"));
+                String itemsJson = rs.getString("items");
+                order.setItems(itemsFromJson(itemsJson));
+                return order;
+            });
         } catch (EmptyResultDataAccessException e) {
             return null; // Return null if no order with the specified id exists
         }
     }
+    private List<String> itemsFromJson(String itemsJson) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(itemsJson, new TypeReference<List<String>>() {});
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private String itemsToJson(Order order){
         ObjectMapper objectMapper = new ObjectMapper();
         String itemsJson = null;
@@ -107,13 +121,40 @@ public class OrderRepository {
         String countQuery = "SELECT COUNT(*) FROM orders WHERE client = ?";
         int total = jdbcTemplate.queryForObject(countQuery, Integer.class, clientName);
 
+        // Calculate the offset based on the page number and size
+        int offset = page * size;
+
         // Query to fetch the data for the current page
         String dataQuery = "SELECT * FROM orders WHERE client = ? LIMIT ? OFFSET ?";
-        List<Order> orders = jdbcTemplate.query(dataQuery, new Object[]{clientName, size, page * size},
-                new BeanPropertyRowMapper<>(Order.class));
+        List<Order> orders = jdbcTemplate.query(dataQuery, new Object[]{clientName, size, offset},
+                (rs, rowNum) -> {
+                    Order order = new Order();
+                    order.setOrderId(rs.getInt("id"));
+                    order.setOrderDate(rs.getDate("order_date"));
+                    order.setClient(rs.getString("client"));
+                    order.setAmount(rs.getInt("amount"));
+                    String itemsJson = rs.getString("items");
+                    order.setItems(itemsFromJson(itemsJson));
+                    return order;
+                });
 
-        // Create a PageImpl instance with the fetched data and total count
+        // Create a Pageable object
         Pageable pageable = PageRequest.of(page, size);
+
+        // Return a PageImpl instance with the fetched data and total count
         return new PageImpl<>(orders, pageable, total);
+    }
+    public List<Order> findAllByClient(String clientName) {
+        String sql = "SELECT * FROM orders WHERE client = ?";
+        return jdbcTemplate.query(sql, new Object[]{clientName}, (rs, rowNum) -> {
+            Order order = new Order();
+            order.setOrderId(rs.getInt("id"));
+            order.setOrderDate(rs.getDate("order_date"));
+            order.setClient(rs.getString("client"));
+            order.setAmount(rs.getInt("amount"));
+            String itemsJson = rs.getString("items");
+            order.setItems(itemsFromJson(itemsJson));
+            return order;
+        });
     }
 }
