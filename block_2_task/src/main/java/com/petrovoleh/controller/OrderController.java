@@ -2,7 +2,6 @@ package com.petrovoleh.controller;
 
 import com.petrovoleh.model.*;
 import com.petrovoleh.model.Order;
-import com.petrovoleh.parser.parser.Parser;
 import com.petrovoleh.service.ClientService;
 import com.petrovoleh.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
