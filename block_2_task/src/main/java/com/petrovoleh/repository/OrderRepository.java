@@ -6,11 +6,16 @@ import com.petrovoleh.model.Order;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -90,9 +95,25 @@ public class OrderRepository {
         return null; // Return null if update failed
     }
 
+
     public boolean deleteOrder(int id) {
         String sql = "DELETE FROM orders WHERE id = ?";
         int rowsDeleted = jdbcTemplate.update(sql, id);
         return rowsDeleted > 0; // Return true if deletion successful, false otherwise
+    }
+
+    public Page<Order> findByClient(String clientName, int page, int size) {
+        // Query to fetch the total count
+        String countQuery = "SELECT COUNT(*) FROM orders WHERE client = ?";
+        int total = jdbcTemplate.queryForObject(countQuery, Integer.class, clientName);
+
+        // Query to fetch the data for the current page
+        String dataQuery = "SELECT * FROM orders WHERE client = ? LIMIT ? OFFSET ?";
+        List<Order> orders = jdbcTemplate.query(dataQuery, new Object[]{clientName, size, page * size},
+                new BeanPropertyRowMapper<>(Order.class));
+
+        // Create a PageImpl instance with the fetched data and total count
+        Pageable pageable = PageRequest.of(page, size);
+        return new PageImpl<>(orders, pageable, total);
     }
 }

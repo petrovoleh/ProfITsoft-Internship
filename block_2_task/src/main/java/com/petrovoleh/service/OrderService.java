@@ -3,8 +3,9 @@ package com.petrovoleh.service;
 import com.petrovoleh.model.Order;
 import com.petrovoleh.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Service
@@ -63,5 +64,9 @@ public class OrderService {
             }
         }
         return successfulImports;
+    }
+    public List<Order> getOrdersByName(String name, int page, int size) {
+        Page<com.petrovoleh.model.Order> ordersPage = orderRepository.findByClient(name, page, size);
+        return ordersPage.getContent();
     }
 }

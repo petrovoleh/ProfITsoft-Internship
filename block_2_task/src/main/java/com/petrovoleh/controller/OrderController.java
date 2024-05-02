@@ -1,9 +1,7 @@
 package com.petrovoleh.controller;
 
-import com.petrovoleh.model.Client;
+import com.petrovoleh.model.*;
 import com.petrovoleh.model.Order;
-import com.petrovoleh.model.Order;
-import com.petrovoleh.model.OrderResponse;
 import com.petrovoleh.parser.parser.Parser;
 import com.petrovoleh.service.ClientService;
 import com.petrovoleh.service.OrderService;
@@ -12,7 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -88,8 +88,10 @@ public class OrderController {
         return ResponseEntity.notFound().build();
     }
     @PostMapping("/_list")
-    public ResponseEntity<OrderResponse> postList(@PathVariable int id) {
+    public ResponseEntity<List<Order>> postList(@RequestBody OrderListRequest request) {
+        List<Order> orders = service.getOrdersByName(request.getName(), request.getPage(), request.getSize());
 
-        return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(orders);
     }
 }
