@@ -3,7 +3,6 @@ package com.petrovoleh.service;
 import com.petrovoleh.model.Order;
 import com.petrovoleh.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import java.util.List;
@@ -66,5 +65,42 @@ public class OrderService {
     }
     public List<Order> getAllOrdersByName(String name) {
         return orderRepository.findAllByClient(name);
+    }
+
+
+    public String generateCsvContent(List<Order> orders) {
+        StringBuilder csvContent = new StringBuilder();
+
+        // Append CSV header
+        csvContent.append("Order ID,Order Date,Client,Amount,Items\n");
+
+        // Iterate over each order and append CSV rows
+        for (Order order : orders) {
+            // Append order details as CSV row
+            csvContent.append(order.getOrderId()).append(",")
+                    .append(order.getOrderDate()).append(",")
+                    .append(order.getClient()).append(",")
+                    .append(order.getAmount()).append(",")
+                    .append(formatItems(order.getItems())).append("\n");
+        }
+
+        return csvContent.toString();
+    }
+
+    // Method to format items list as a comma-separated string
+    private String formatItems(List<String> items) {
+        if (items == null || items.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder formattedItems = new StringBuilder();
+        for (String item : items) {
+            formattedItems.append(item).append(", ");
+        }
+
+        // Remove trailing comma and space
+        formattedItems.delete(formattedItems.length() - 2, formattedItems.length());
+
+        return formattedItems.toString();
     }
 }

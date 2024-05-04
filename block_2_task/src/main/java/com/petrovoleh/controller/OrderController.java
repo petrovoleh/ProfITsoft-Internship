@@ -1,7 +1,11 @@
+
 package com.petrovoleh.controller;
 
-import com.petrovoleh.model.*;
+import com.petrovoleh.model.Client;
 import com.petrovoleh.model.Order;
+import com.petrovoleh.model.OrderResponse;
+import com.petrovoleh.model.OrderListRequest;
+import com.petrovoleh.model.OrderListResponse;
 import com.petrovoleh.service.ClientService;
 import com.petrovoleh.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Клас OrderController обробляє HTTP-запити, пов'язані з операціями замовлення.
+ */
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -29,6 +33,12 @@ public class OrderController {
         this.clientService = clientService;
     }
 
+    /**
+     * Отримує замовлення за ідентифікатором.
+     *
+     * @param id Ідентифікатор замовлення.
+     * @return ResponseEntity із замовленням та HTTP-статусом OK у разі успіху, або HTTP-статусом NOT_FOUND, якщо замовлення не знайдене.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable int id) {
         Order order = service.getOrderById(id);
@@ -43,6 +53,12 @@ public class OrderController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Створює нове замовлення.
+     *
+     * @param order Об'єкт замовлення для створення.
+     * @return ResponseEntity із створеним замовленням та HTTP-статусом CREATED у разі успіху, або HTTP-статусом CONFLICT, якщо замовлення вже існує.
+     */
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         Order createdOrder = service.createOrder(order);
@@ -52,6 +68,13 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
+    /**
+     * Оновлює існуюче замовлення.
+     *
+     * @param id          Ідентифікатор замовлення для оновлення.
+     * @param updatedOrder Оновлений об'єкт замовлення.
+     * @return ResponseEntity із оновленим замовленням та HTTP-статусом OK у разі успіху, або HTTP-статусом NOT_FOUND, якщо замовлення не знайдене.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Order> updateOrder(@PathVariable int id, @RequestBody Order updatedOrder) {
         Order order = service.updateOrder(id, updatedOrder);
@@ -61,6 +84,12 @@ public class OrderController {
         return ResponseEntity.notFound().build();
     }
 
+    /**
+     * Видаляє замовлення за ідентифікатором.
+     *
+     * @param id Ідентифікатор замовлення для видалення.
+     * @return ResponseEntity з HTTP-статусом NO_CONTENT у разі успіху, або HTTP-статусом NOT_FOUND, якщо замовлення не знайдене.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable int id) {
         boolean deleted = service.deleteOrder(id);
@@ -70,7 +99,12 @@ public class OrderController {
         return ResponseEntity.notFound().build();
     }
 
-
+    /**
+     * Завантажує замовлення.
+     *
+     * @param orders Список замовлень для завантаження.
+     * @return ResponseEntity із відповіддю та HTTP-статусом OK.
+     */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadOrders(@RequestBody List<Order> orders) {
         // Парсити JSON-файл і передавати список замовлень на обробку сервісу
@@ -79,11 +113,18 @@ public class OrderController {
         String response = "{\"successfulImports\": " + successfulImports + ", \"failedImports\": " + failedImports + "}";
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    /**
+     * Генерує звіт.
+     *
+     * @param request Об'єкт запиту на звіт.
+     * @return ResponseEntity із звітом та HTTP-статусом OK.
+     */
     @PostMapping("/_report")
     public ResponseEntity<byte[]> generateReport(@RequestBody OrderListRequest request) {
         List<Order> allOrders = service.getAllOrdersByName(request.getName());
         // Generate CSV content
-        String csvContent = generateCsvContent(allOrders);
+        String csvContent = service.generateCsvContent(allOrders);
 
         // Set headers for CSV response
         HttpHeaders headers = new HttpHeaders();
@@ -98,6 +139,13 @@ public class OrderController {
                 .headers(headers)
                 .body(csvBytes);
     }
+
+    /**
+     * Постійно змінює список.
+     *
+     * @param request Об'єкт запиту на список.
+     * @return ResponseEntity із списком та HTTP-статусом OK.
+     */
     @PostMapping("/_list")
     public ResponseEntity<OrderListResponse> postList(@RequestBody OrderListRequest request) {
         Page<Order> ordersPage = service.getOrdersByName(request.getName(), request.getPage(), request.getSize());
@@ -107,42 +155,5 @@ public class OrderController {
 
         OrderListResponse response = new OrderListResponse(orders, totalPages);
         return ResponseEntity.ok(response);
-    }
-
-
-    private String generateCsvContent(List<Order> orders) {
-        StringBuilder csvContent = new StringBuilder();
-
-        // Append CSV header
-        csvContent.append("Order ID,Order Date,Client,Amount,Items\n");
-
-        // Iterate over each order and append CSV rows
-        for (Order order : orders) {
-            // Append order details as CSV row
-            csvContent.append(order.getOrderId()).append(",")
-                    .append(order.getOrderDate()).append(",")
-                    .append(order.getClient()).append(",")
-                    .append(order.getAmount()).append(",")
-                    .append(formatItems(order.getItems())).append("\n");
-        }
-
-        return csvContent.toString();
-    }
-
-    // Method to format items list as a comma-separated string
-    private String formatItems(List<String> items) {
-        if (items == null || items.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder formattedItems = new StringBuilder();
-        for (String item : items) {
-            formattedItems.append(item).append(", ");
-        }
-
-        // Remove trailing comma and space
-        formattedItems.delete(formattedItems.length() - 2, formattedItems.length());
-
-        return formattedItems.toString();
     }
 }
