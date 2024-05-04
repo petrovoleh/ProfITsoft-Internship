@@ -6,10 +6,10 @@
     <!-- Changeset to create 'orders' table -->
     <changeSet id="create-orders-table" author="postgres">
         <createTable tableName="orders">
-            <column name="orderId" type="int">
+            <column name="id" type="int">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="orderDate" type="datetime"/>
+            <column name="order_date" type="datetime"/>
             <column name="client" type="varchar(255)"/>
             <column name="amount" type="int"/>
             <column name="items" type="jsonb"/>
@@ -37,8 +37,8 @@
     <!-- Changeset to insert sample data into 'orders' table -->
     <changeSet id="insert-sample-orders-data" author="postgres">
         <sql>
-            INSERT INTO orders (orderId, orderDate, client, amount, items) VALUES (1, '2024-05-01', 'Client1', 100, '["item1", "item2"]');
-            INSERT INTO orders (orderId, orderDate, client, amount, items) VALUES (2, '2024-05-02', 'Client2', 200, '["item3", "item4"]');
+            INSERT INTO orders (id, order_date, client, amount, items) VALUES (1, '2024-05-01', 'Client1', 100, '["item1", "item2"]');
+            INSERT INTO orders (id, order_date, client, amount, items) VALUES (2, '2024-05-02', 'Client2', 200, '["item3", "item4"]');
         </sql>
     </changeSet>
 
